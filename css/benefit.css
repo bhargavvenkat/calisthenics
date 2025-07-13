@@ -1,0 +1,317 @@
+:root {
+  --primary-color: #004d66; /* Darker teal/navy for primary elements */
+  --secondary-color: #00796b; /* Greenish teal for accents */
+  --light-bg: #eef2f6; /* Light background */
+  --card-bg: #ffffff; /* White for card backgrounds */
+  --text-color: #333; /* Dark text */
+  --light-text-color: #eee; /* Light text for headers */
+  --shadow-light: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  line-height: 1.7;
+  margin: 0;
+  padding: 0;
+  background-image: url('../../assets/calis.jpg'); /* Path to your image */
+  background-size: cover; /* Cover the entire viewport */
+  background-attachment: fixed; /* Keep background fixed while scrolling */
+  background-position: center center; /* Center the background image */
+  color: var(--text-color);
+  box-sizing: border-box;
+  scroll-behavior: smooth; /* Smooth scrolling for "Back to Top" */
+  position: relative; /* Needed for pseudo-element positioning */
+  z-index: 0; /* Ensure body content is above overlay */
+}
+
+/* Black overlay for background image */
+body::before {
+  content: '';
+  position: fixed; /* Use fixed to cover the whole viewport, even if body content is short */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.45); /* Black overlay with 45% opacity (adjust for intensity) */
+  z-index: -1; /* Place behind body content but above background image */
+}
+
+/* Global reset for better consistency */
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* Scroll Progress Bar */
+#progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%; /* Initial width, controlled by JS */
+  height: 5px; /* Height of the bar */
+  background-color: var(--secondary-color);
+  z-index: 1001; /* Ensure it's on top */
+  transition: width 0.1s linear; /* Smooth width transition */
+}
+
+header {
+  background-color: var(--primary-color);
+  color: var(--light-text-color);
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: 0 4px 8px var(--shadow-light);
+  position: relative;
+  overflow: hidden;
+  /* Add a subtle gradient for depth */
+  background: linear-gradient(135deg, var(--primary-color) 0%, #00334e 100%);
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+}
+
+header h1 {
+  color: #fff; /* Explicitly set to white for max contrast */
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 3.2em; /* Slightly larger title */
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5); /* More defined shadow for better readability */
+}
+
+header p {
+  font-size: 1.2em; /* Slightly larger intro text */
+  opacity: 0.95;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+main {
+  max-width: 960px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+section {
+  margin-bottom: 35px;
+  /* Initial state for fade-in animation */
+  transform: translateY(40px) scale(0.98); /* Start lower and slightly smaller */
+  opacity: 0;
+  filter: blur(8px); /* Start blurred */
+  transition: transform 0.8s ease-out, opacity 0.8s ease-out, filter 0.8s ease-out; /* Slower, smoother transition */
+}
+
+/* Visible state for fade-in animation */
+section.fade-in.visible {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+  filter: blur(0);
+}
+
+.card {
+  background-color: var(--card-bg);
+  padding: 30px;
+  border-radius: 12px; /* More rounded corners */
+  box-shadow: 0 8px 20px var(--shadow-light); /* More pronounced shadow */
+}
+
+main h2 {
+  color: var(--secondary-color); /* This was h1, h2; h1 is in the dark header */
+  margin-top: 0;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e0f7fa;
+  padding-bottom: 12px;
+  font-size: 2.2em; /* Slightly larger H2 */
+  font-weight: 600; /* Bolder H2 */
+}
+
+p {
+  margin-bottom: 15px;
+}
+
+/* Styling for dynamically loaded benefits list */
+#benefits-list-container {
+  list-style: none; /* Remove default list styling */
+  padding: 0;
+}
+
+.benefit-item {
+  background-color: #f9f9f9; /* Light background for each item */
+  margin-bottom: 15px;
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  overflow: hidden; /* For expandable content transition */
+}
+
+.benefit-item:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  background-color: #e6f7ff; /* Lighter blue on hover */
+}
+
+.benefit-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.25em;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.benefit-item-header .toggle-icon {
+  font-size: 1.5em;
+  line-height: 1; /* For better vertical alignment */
+  transition: transform 0.3s ease;
+}
+
+.benefit-item.expanded .benefit-item-header .toggle-icon {
+  transform: rotate(45deg); /* Rotate icon when expanded */
+}
+
+.benefit-description {
+  max-height: 0; /* Hidden by default */
+  overflow: hidden;
+  transition: max-height 0.5s ease-out, padding 0.5s ease-out, opacity 0.5s ease-out;
+  padding-top: 0;
+  opacity: 0;
+  font-size: 0.95em;
+  color: #555;
+}
+
+.benefit-item.expanded .benefit-description {
+  max-height: 200px; /* Adjust as needed to fit content */
+  padding-top: 15px;
+  opacity: 1;
+}
+
+.benefit-description ul {
+  list-style-type: circle;
+  margin-left: 20px;
+  margin-top: 10px;
+  margin-bottom: 0; /* Remove bottom margin if list is last element */
+  padding: 0;
+}
+
+.benefit-description ul li {
+  margin-bottom: 8px;
+  line-height: 1.5;
+  padding: 0; /* Remove padding from description list items */
+  background-color: transparent; /* Ensure no hover background */
+  transform: none; /* Ensure no hover transform */
+  box-shadow: none; /* Ensure no hover shadow */
+}
+
+.benefit-description ul li:hover {
+  background-color: transparent;
+  transform: none;
+}
+
+
+strong {
+  color: var(--primary-color);
+}
+
+/* Back to Top Button */
+#back-to-top {
+  display: none; /* Hidden by default */
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 55px; /* Slightly larger button */
+  height: 55px;
+  font-size: 28px; /* Larger arrow */
+  cursor: pointer;
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+  z-index: 1000;
+  opacity: 0.85; /* Slightly less opaque */
+  display: flex; /* Use flexbox to center arrow */
+  justify-content: center;
+  align-items: center;
+}
+
+#back-to-top:hover {
+  background-color: #004d40;
+  transform: translateY(-4px); /* More pronounced lift */
+  opacity: 1;
+}
+
+/* Summary section highlight (from JS) */
+#summary.highlighted {
+  background-color: #e0f7fa;
+  box-shadow: 0 8px 25px rgba(0, 100, 150, 0.25); /* More prominent shadow on highlight */
+  border: 1px solid #c0e6f7; /* Subtle border on highlight */
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2.5em;
+  }
+  main {
+    margin: 30px auto;
+    padding: 0 15px;
+  }
+  .card {
+    padding: 25px;
+  }
+  h2 {
+    font-size: 1.8em;
+  }
+  .benefit-item {
+    padding: 18px 20px;
+  }
+  .benefit-item-header {
+    font-size: 1.1em;
+  }
+  .benefit-item-header .toggle-icon {
+    font-size: 1.3em;
+  }
+  #back-to-top {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    bottom: 25px;
+    right: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  header h1 {
+    font-size: 2em;
+  }
+  header p {
+    font-size: 1em;
+  }
+  .card {
+    padding: 20px;
+  }
+  h2 {
+    font-size: 1.6em;
+  }
+  .benefit-item {
+    padding: 15px 18px;
+  }
+  .benefit-item-header {
+    font-size: 1em;
+  }
+  .benefit-description {
+    font-size: 0.9em;
+  }
+  #back-to-top {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
